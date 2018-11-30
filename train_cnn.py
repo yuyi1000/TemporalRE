@@ -935,7 +935,7 @@ class ConvNet(object):
 
 
         
-        
+        '''
         
         ###################################################
         # fine tuning trained model on validation dataset
@@ -1112,7 +1112,7 @@ class ConvNet(object):
             print (total_confusion_matrix_value)
 
 
-        
+        '''
 
 
 

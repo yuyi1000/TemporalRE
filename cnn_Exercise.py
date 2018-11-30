@@ -27,7 +27,7 @@ parser.add_argument('--learning_rate',
                     help='Initial learning rate.')
 parser.add_argument('--num_epochs',
                     type=int,
-                    default=15, 
+                    default=300, 
                     help='Number of epochs to run trainer.')
 parser.add_argument('--drop_out',
                     type=float,
@@ -38,7 +38,8 @@ parser.add_argument('--decay',
                     default=0.001, 
                     help='Decay rate of l2 regularization.')
 parser.add_argument('--batch_size', 
-                    type=int, default=50, 
+                    # type=int, default=50,
+                    type=int, default=1, 
                     help='Batch size. Must divide evenly into the dataset sizes.')
 parser.add_argument('--log_dir', 
                     type=str, 
@@ -56,8 +57,9 @@ parser.add_argument('--model_path',
                     # default='../model/cnn.ckpt',
                     help='Path of the trained model')
 parser.add_argument('--embedding_path', 
-                    type=str, 
-                    default='../data/embedding_with_xml_tag.pkl',
+                    type=str,
+                    default='../data/step3_embedding_with_xml_tag.pkl',
+                    # default='../data/embedding_with_xml_tag.pkl',
                     # default='../data/embedding_test_with_xml_tag.pkl',
                     help='Path of the pretrained word embedding.')
 parser.add_argument('--thyme_data_dir', 
@@ -69,14 +71,14 @@ parser.add_argument('--thyme_data_dir',
                     # default='../data/padding_event_vs_time_with_xml_tag.pkl',
                     # default='../data/padding_test_event_vs_time_with_xml_tag.pkl',
                     # default='../data/step2_padding_test_event_vs_time_with_xml_tag.pkl',
-                    default='../data/step2_padding_event_vs_time_with_xml_tag.pkl',
+                    # default='../data/step2_padding_event_vs_time_with_xml_tag.pkl',
+                    default='../data/step3_padding_event_vs_time_with_xml_tag.pkl',
                     help='Directory to put the thyme data.')
 
  
 FLAGS = None
 FLAGS, unparsed = parser.parse_known_args()
-# mode = int(sys.argv[1])
-mode = 2
+mode = int(sys.argv[1])
 
 
 def show_sentence(sent_emb, id_to_word):

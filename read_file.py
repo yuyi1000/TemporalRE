@@ -370,14 +370,14 @@ class THYME(object):
         
         if not embedding:
             self.vocab = set()
-            if full_dataset:
-                self.collect_vocab(pattern, nlp, thyme_data_path + '/train/', train_data_files)
-                self.collect_vocab(pattern, nlp, thyme_data_path + '/dev/', dev_data_files)
-            else:
-                self.collect_vocab(pattern, nlp, thyme_data_path + '/train/', train_data_files[:4])
+            # if full_dataset:
+            #     self.collect_vocab(pattern, nlp, thyme_data_path + '/train/', train_data_files)
+            #     self.collect_vocab(pattern, nlp, thyme_data_path + '/dev/', dev_data_files)
+            # else:
+            #     self.collect_vocab(pattern, nlp, thyme_data_path + '/train/', train_data_files[:4])
 
-                print ("train data test files")
-                print (train_data_files[:4])
+            #     print ("train data test files")
+            #     print (train_data_files[:4])
                 
                 # self.collect_vocab(pattern, nlp, thyme_data_path + '/dev/', dev_data_files[:3])
                 
@@ -401,6 +401,8 @@ class THYME(object):
             # self.label_dict = {'NONE' : 0, 'CONTAINS_LR' : 1, 'CONTAINS_RL' : 2}
             # self.label_dict = {'none' : 0, 'contains' : 1, 'contains_1' : 2}
             self.label_dict = {'none' : 0, 'contains_lr' : 1, 'contains_rl' : 2}
+
+            '''
             
             ###############################
             # Full dataset
@@ -455,6 +457,18 @@ class THYME(object):
                 #                                        test_data_files, test_anno_files_test, event_vs_event=False, event_vs_time=True, closure_test_set=True)
                 self.closure_test_set = deepcopy(self.test_set)
 
+
+            '''
+
+            self.train_set = self.load_data(pattern, nlp, physio_graph_data_path, physio_graph_anno_path, [physio_graph_train_part_file],
+                                           [physio_graph_anno_train_part_file], event_vs_event=False, event_vs_time=True)
+            # dev set is not used 
+            self.dev_set = self.load_data(pattern, nlp, physio_graph_data_path, physio_graph_anno_path, [physio_graph_train_part_file],
+                                           [physio_graph_anno_train_part_file], event_vs_event=False, event_vs_time=True)
+            self.test_set = self.load_data(pattern, nlp, physio_graph_data_path, physio_graph_anno_path, [physio_graph_test_part_file],
+                                           [physio_graph_anno_test_part_file], event_vs_event=False, event_vs_time=True)
+            self.closure_test_set = deepcopy(self.test_set)            
+            
 
 
     def split_dataset(self, dataset, total, select):
@@ -1879,8 +1893,8 @@ class THYME(object):
 
 def main():
 
-    is_full_dataset = True
-    # is_full_dataset = False
+    # is_full_dataset = True
+    is_full_dataset = False
     
     
     thyme_data_path = '/home/yuyi/corpora/THYME'
@@ -1900,7 +1914,8 @@ def main():
         # Now it just uses randomized embedding
         # embedding = WordEmbedding2(thyme.vocab)
         
-        embedding_path = '/home/yuyi/cs6890/project/data/embedding_with_xml_tag_' + str(i) + '.pkl'
+        # embedding_path = '/home/yuyi/cs6890/project/data/embedding_with_xml_tag_' + str(i) + '.pkl'
+        embedding_path = '/home/yuyi/cs6890/project/data/step3_embedding_with_xml_tag_' + str(i) + '.pkl'
         # embedding_path = '/home/yuyi/cs6890/project/data/embedding_test_with_xml_tag_' + str(i) + '.pkl'
         # embedding_path = '/home/yuyi/cs6890/project/data/embedding_without_xml_tag.pkl'
         # pickle.dump(embedding, open(embedding_path, 'wb'))
@@ -1908,6 +1923,7 @@ def main():
 
         embedding = pickle.load(open(embedding_path, 'rb'))
 
+        
         
         thyme = THYME(embedding, thyme_data_path, thyme_anno_path, physio_graph_data_path=physio_graph_data_path, physio_graph_anno_path=physio_graph_anno_path, full_dataset=is_full_dataset, portion=i)
         print ("thyme: ", thyme)
@@ -1932,6 +1948,7 @@ def main():
         print ("test dataset size: ", test_dataset_size)
         
 
+        '''
         if is_full_dataset:
             # padding_data_path = '/home/yuyi/cs6890/project/data/padding.pkl'
             # padding_data_path = '/home/yuyi/cs6890/project/data/padding_event_vs_event.pkl'
@@ -1952,7 +1969,11 @@ def main():
 
         # print ("train_set[0] length: ", len(train_set[0]))
         # print ("train_set[0]: ", train_set[0])
-        
+        '''
+
+        padding_data_path = '/home/yuyi/cs6890/project/data/step3_padding_event_vs_time_with_xml_tag_' + str(i) + '.pkl'
+        pickle.dump([train_set, dev_set, test_set, closure_test_set, train_dataset_size], open(padding_data_path, 'wb'))
+
 
 if __name__ == '__main__':
     main()    
