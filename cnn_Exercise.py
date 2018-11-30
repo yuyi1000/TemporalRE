@@ -75,7 +75,8 @@ parser.add_argument('--thyme_data_dir',
  
 FLAGS = None
 FLAGS, unparsed = parser.parse_known_args()
-mode = int(sys.argv[1])
+# mode = int(sys.argv[1])
+mode = 2
 
 
 def show_sentence(sent_emb, id_to_word):
