@@ -940,92 +940,92 @@ class ConvNet(object):
         ###################################################
         # fine tuning trained model on validation dataset
 
-        # epsilon = 1e-8
-        # repeat = 3
-        # prev_loss = 0
+        epsilon = 1e-8
+        repeat = 3
+        prev_loss = 0
 
 
-        # for i in range(num_epochs):
-        #   print(20 * '*', 'epoch', i+1, 20 * '*')
+        for i in range(num_epochs):
+          print(20 * '*', 'epoch', i+1, 20 * '*')
 
-        #   start_time = time.time()
-        #   s = 0
+          start_time = time.time()
+          s = 0
 
-        #   # reset batch size
-        #   batch_size = 1
+          # reset batch size
+          batch_size = 1
           
-        #   # total_confusion_matrix_value = np.zeros((class_num, class_num), int)
+          # total_confusion_matrix_value = np.zeros((class_num, class_num), int)
           
-        #   while s < dev_size:
-        #     # skip the last batch for training data
-        #     if s + batch_size >= dev_size:
-        #       break
-        #     e = s + batch_size
-        #     # e = min(s + batch_size, train_size)
+          while s < dev_size:
+            # skip the last batch for training data
+            if s + batch_size >= dev_size:
+              break
+            e = s + batch_size
+            # e = min(s + batch_size, train_size)
 
 
-        #     # (batch_sent_embed, batch_event_one_hot,
-        #     #  batch_timex3_one_hot, batch_first_entity_bitmap, batch_second_entity_bitmap, batch_label,
-        #     #  batch_label0_pos, batch_label1_pos, batch_label2_pos, batch_label3_pos, batch_label4_pos, batch_label5_pos,
-        #     #  batch_label6_pos, batch_label7_pos, batch_label8_pos, batch_label9_pos) \
-        #     # = self.get_batch(dev_set, s, e)
+            # (batch_sent_embed, batch_event_one_hot,
+            #  batch_timex3_one_hot, batch_first_entity_bitmap, batch_second_entity_bitmap, batch_label,
+            #  batch_label0_pos, batch_label1_pos, batch_label2_pos, batch_label3_pos, batch_label4_pos, batch_label5_pos,
+            #  batch_label6_pos, batch_label7_pos, batch_label8_pos, batch_label9_pos) \
+            # = self.get_batch(dev_set, s, e)
             
 
-        #     (batch_sent_embed, batch_event_one_hot, batch_timex3_one_hot, batch_first_entity_bitmap,
-        #      batch_second_entity_bitmap, batch_label, batch_thyme_pos, batch_physio_pos) \
-        #     = self.get_batch(dev_set, s, e)
+            (batch_sent_embed, batch_event_one_hot, batch_timex3_one_hot, batch_first_entity_bitmap,
+             batch_second_entity_bitmap, batch_label, batch_thyme_pos, batch_physio_pos) \
+            = self.get_batch(dev_set, s, e)
 
 
-        #     _, loss_value, confusion_matrix_value \
-        #     = sess.run([train_op, loss, confusion_matrix], \
-        #                feed_dict={sent_embed: batch_sent_embed,
-        #                           event_one_hot: batch_event_one_hot,
-        #                           timex3_one_hot: batch_timex3_one_hot,
-        #                           first_entity_bitmap: batch_first_entity_bitmap,
-        #                           second_entity_bitmap: batch_second_entity_bitmap,
-        #                           # boolean_features : batch_boolean_features,
-        #                           is_training: True,
-        #                           label: batch_label,
-        #                           thyme_pos: batch_thyme_pos,
-        #                           physio_pos: batch_physio_pos})
+            _, loss_value, confusion_matrix_value \
+            = sess.run([train_op, loss, confusion_matrix], \
+                       feed_dict={sent_embed: batch_sent_embed,
+                                  event_one_hot: batch_event_one_hot,
+                                  timex3_one_hot: batch_timex3_one_hot,
+                                  first_entity_bitmap: batch_first_entity_bitmap,
+                                  second_entity_bitmap: batch_second_entity_bitmap,
+                                  # boolean_features : batch_boolean_features,
+                                  is_training: True,
+                                  label: batch_label,
+                                  thyme_pos: batch_thyme_pos,
+                                  physio_pos: batch_physio_pos})
 
             
-        #     # _, loss_value, confusion_matrix_value \
-        #     # = sess.run([train_op, loss, confusion_matrix], \
-        #     #            feed_dict={sent_embed: batch_sent_embed,
-        #     #                       event_one_hot: batch_event_one_hot,
-        #     #                       timex3_one_hot: batch_timex3_one_hot,
-        #     #                       first_entity_bitmap: batch_first_entity_bitmap,
-        #     #                       second_entity_bitmap: batch_second_entity_bitmap,
-        #     #                       # boolean_features : batch_boolean_features,
-        #     #                       is_training: True,
-        #     #                       label: batch_label,
-        #     #                       label1_pos: batch_label1_pos,
-        #     #                       label2_pos: batch_label2_pos,
-        #     #                       label3_pos: batch_label3_pos,
-        #     #                       label4_pos: batch_label4_pos,
-        #     #                       label5_pos: batch_label5_pos,
-        #     #                       label6_pos: batch_label6_pos,
-        #     #                       label7_pos: batch_label7_pos,
-        #     #                       label8_pos: batch_label8_pos,
-        #     #                       label9_pos: batch_label9_pos})
+            # _, loss_value, confusion_matrix_value \
+            # = sess.run([train_op, loss, confusion_matrix], \
+            #            feed_dict={sent_embed: batch_sent_embed,
+            #                       event_one_hot: batch_event_one_hot,
+            #                       timex3_one_hot: batch_timex3_one_hot,
+            #                       first_entity_bitmap: batch_first_entity_bitmap,
+            #                       second_entity_bitmap: batch_second_entity_bitmap,
+            #                       # boolean_features : batch_boolean_features,
+            #                       is_training: True,
+            #                       label: batch_label,
+            #                       label1_pos: batch_label1_pos,
+            #                       label2_pos: batch_label2_pos,
+            #                       label3_pos: batch_label3_pos,
+            #                       label4_pos: batch_label4_pos,
+            #                       label5_pos: batch_label5_pos,
+            #                       label6_pos: batch_label6_pos,
+            #                       label7_pos: batch_label7_pos,
+            #                       label8_pos: batch_label8_pos,
+            #                       label9_pos: batch_label9_pos})
             
-        #     s = e
-        #   end_time = time.time()
+            s = e
+          end_time = time.time()
 
-        #   # print ("confusion matrix: ", total_confusion_matrix_value)
+          # print ("confusion matrix: ", total_confusion_matrix_value)
           
-        #   print ('the fine tuning took: %d(s)' % (end_time - start_time), flush=True)
-        #   print ("loss: ", loss_value)
+          print ('the fine tuning took: %d(s)' % (end_time - start_time), flush=True)
+          print ("loss: ", loss_value)
 
-        #   if abs(loss_value - prev_loss) < epsilon:
-        #     repeat -= 1
-        #     if repeat == 0:
-        #       break
-        #   else:
-        #     repeat = 3
+          if abs(loss_value - prev_loss) < epsilon:
+            repeat -= 1
+            if repeat == 0:
+              break
+          else:
+            repeat = 3
 
-        #   prev_loss = loss_value
+          prev_loss = loss_value
 
 
 
