@@ -31,7 +31,7 @@ parser.add_argument('--num_epochs',
                     help='Number of epochs to run trainer.')
 parser.add_argument('--drop_out',
                     type=float,
-                    default=0.25, 
+                    default=0.5, 
                     help='drop out rate for last layer.')
 parser.add_argument('--decay',
                     type=float,
@@ -58,8 +58,8 @@ parser.add_argument('--model_path',
                     help='Path of the trained model')
 parser.add_argument('--embedding_path', 
                     type=str,
-                    default='../data/step3_embedding_with_xml_tag.pkl',
-                    # default='../data/embedding_with_xml_tag.pkl',
+                    # default='../data/step3_embedding_with_xml_tag.pkl',
+                    default='../data/embedding_with_xml_tag.pkl',
                     # default='../data/embedding_test_with_xml_tag.pkl',
                     help='Path of the pretrained word embedding.')
 parser.add_argument('--thyme_data_dir', 
@@ -68,11 +68,11 @@ parser.add_argument('--thyme_data_dir',
                     # default='../data/padding_test_event_vs_event.pkl',
                     # default='../data/padding_test_event_vs_time.pkl',
                     # default='../data/padding_event_vs_event.pkl',
-                    # default='../data/padding_event_vs_time_with_xml_tag.pkl',
+                    default='../data/padding_event_vs_time_with_xml_tag.pkl',
                     # default='../data/padding_test_event_vs_time_with_xml_tag.pkl',
                     # default='../data/step2_padding_test_event_vs_time_with_xml_tag.pkl',
                     # default='../data/step2_padding_event_vs_time_with_xml_tag.pkl',
-                    default='../data/step3_padding_event_vs_time_with_xml_tag.pkl',
+                    # default='../data/step3_padding_event_vs_time_with_xml_tag.pkl',
                     help='Directory to put the thyme data.')
 
  
@@ -174,143 +174,143 @@ def main():
   # k = 5
 
   # for testing, set k to 1
-  k = 5
+  # k = 5
   
-  for i in range(k):
+  # for i in range(k):
 
   
-    # ======================================================================
-    #  STEP 0: Load pre-trained word embeddings and the SNLI data set
-    #
+  # ======================================================================
+  #  STEP 0: Load pre-trained word embeddings and the SNLI data set
+  #
 
-    embedding_path = FLAGS.embedding_path
-    new_embedding_path = embedding_path[:embedding_path.rindex('.pkl')] + '_' + str(i) + '.pkl'
-    
-    # embedding = pickle.load(open(FLAGS.embedding_path, 'rb'))
-    embedding = pickle.load(open(new_embedding_path, 'rb'))
+  embedding_path = FLAGS.embedding_path
+  # new_embedding_path = embedding_path[:embedding_path.rindex('.pkl')] + '_' + str(i) + '.pkl'
 
-    thyme_data_dir = FLAGS.thyme_data_dir
-    new_thyme_data_dir = thyme_data_dir[:thyme_data_dir.rindex('.pkl')] + '_' + str(i) + '.pkl'
-    
-    # thyme = pickle.load(open(FLAGS.thyme_data_dir, 'rb'))
-    thyme = pickle.load(open(new_thyme_data_dir, 'rb'))
-    train_set = thyme[0]
-    print("number of instances in training set: ", len(train_set[0]))
-    dev_set   = thyme[1]
-    # combine_train_and_dev(train_set, dev_set)
-    # print("number of instances in combined training set: ", len(train_set[0]))
-    test_set  = thyme[2]
-    closure_test_set = thyme[3]
-    # train_label_count = thyme[4]
+  embedding = pickle.load(open(FLAGS.embedding_path, 'rb'))
+  # embedding = pickle.load(open(new_embedding_path, 'rb'))
 
-    train_dataset_size = thyme[4]
+  thyme_data_dir = FLAGS.thyme_data_dir
+  # new_thyme_data_dir = thyme_data_dir[:thyme_data_dir.rindex('.pkl')] + '_' + str(i) + '.pkl'
 
+  thyme = pickle.load(open(FLAGS.thyme_data_dir, 'rb'))
+  # thyme = pickle.load(open(new_thyme_data_dir, 'rb'))
+  train_set = thyme[0]
+  print("number of instances in training set: ", len(train_set[0]))
+  dev_set   = thyme[1]
+  # combine_train_and_dev(train_set, dev_set)
+  # print("number of instances in combined training set: ", len(train_set[0]))
+  test_set  = thyme[2]
+  closure_test_set = thyme[3]
+  # train_label_count = thyme[4]
 
-    
-
-    # test_after_set = extract_word(test_set, embedding.id_to_word)
+  train_dataset_size = thyme[4]
 
 
-    # ====================================================================
-    # Use a smaller portion of training examples (e.g. ratio = 0.1) 
-    # for debuging purposes.
-    # Set ratio = 1 for training with all training examples.
-
-    ratio = 1
-
-    train_size = train_set[0].shape[0]
-    idx = list(range(train_size))
-    idx = numpy.asarray(idx, dtype=numpy.int32)
-
-    # Shuffle the train set.
-    for _ in range(7):
-      numpy.random.shuffle(idx)
-
-    # Get a certain ratio of the training set.
-    idx = idx[0:int(idx.shape[0] * ratio)]
-    sent_embed = train_set[0][idx]
-
-    # pos_embed_source = train_set[1][idx]
-    # pos_embed_target = train_set[2][idx]
-
-    # pos_embed_first_entity = train_set[1][idx]
-    # pos_embed_second_entity = train_set[2][idx]
-
-    event_bitmap = train_set[1][idx]
-    timex3_bitmap = train_set[2][idx]
-    # source_bitmap = train_set[3][idx]
-    # target_bitmap = train_set[4][idx]
-
-    first_entity_bitmap = train_set[3][idx]
-    second_entity_bitmap = train_set[4][idx]
-
-    # boolean_features = train_set[7][idx]
-    # label = train_set[8][idx]
-    # label = train_set[7][idx]
-    label = train_set[5][idx]
-
-    # train_set = [sent_embed, pos_embed_source, pos_embed_target, event_bitmap, timex3_bitmap, source_bitmap, target_bitmap, boolean_features, label]
-    # train_set = [sent_embed, pos_embed_source, pos_embed_target, event_bitmap, timex3_bitmap, source_bitmap, target_bitmap, label]
-    # train_set = [sent_embed, event_bitmap, timex3_bitmap, source_bitmap, target_bitmap, label]
-    # train_set = [sent_embed, event_bitmap, timex3_bitmap, first_entity_bitmap, second_entity_bitmap, label]
-
-    # train_set = [sent_embed, pos_embed_first_entity, pos_embed_second_entity, event_bitmap, timex3_bitmap, source_bitmap, target_bitmap, label]
-    # train_set = [sent_embed, pos_embed_source, pos_embed_target, event_bitmap, timex3_bitmap, label]
-
-    # k_fold_dev_sets, k_fold_closure_test_sets = create_k_fold(closure_test_set, 10)
-
-    # inspect2('/home/yuyi/cs6890/project/data/embedding_with_xml_tag.pkl', k_fold_dev_sets[3], entire=True)
-    # inspect2('/home/yuyi/cs6890/project/data/embedding_with_xml_tag.pkl', k_fold_closure_test_sets[3], entire=True)
-
-    # sys.exit("exit for bugging...")
 
 
-    # ======================================================================
-    #  STEP 1: Train a baseline model.
-    #  This trains a feed forward neural network with one hidden layer.
-    #
-    #  Expected accuracy: 97.80%
-
-    if mode == 1:
-      cnn = ConvNet(1)
-      accuracy = cnn.train_and_evaluate(FLAGS, embedding, train_set, dev_set, test_set, train_label_count)
-
-      # Output accuracy.
-      print(20 * '*' + 'model 1' + 20 * '*')
-      print('accuracy is %f' % (accuracy))
-      print()
+  # test_after_set = extract_word(test_set, embedding.id_to_word)
 
 
-    # ======================================================================
-    #  STEP 2: Use one convolutional layer.
-    #  
-    #  Expected accuracy: 98.78%
+  # ====================================================================
+  # Use a smaller portion of training examples (e.g. ratio = 0.1) 
+  # for debuging purposes.
+  # Set ratio = 1 for training with all training examples.
 
-    if mode == 2:
-      cnn = ConvNet(2)
+  ratio = 1
 
-      # confusion_matrix = cnn.train_and_evaluate(FLAGS, embedding, train_set, dev_set, test_set, closure_test_set, train_label_count)
+  train_size = train_set[0].shape[0]
+  idx = list(range(train_size))
+  idx = numpy.asarray(idx, dtype=numpy.int32)
+
+  # Shuffle the train set.
+  for _ in range(7):
+    numpy.random.shuffle(idx)
+
+  # Get a certain ratio of the training set.
+  idx = idx[0:int(idx.shape[0] * ratio)]
+  sent_embed = train_set[0][idx]
+
+  # pos_embed_source = train_set[1][idx]
+  # pos_embed_target = train_set[2][idx]
+
+  # pos_embed_first_entity = train_set[1][idx]
+  # pos_embed_second_entity = train_set[2][idx]
+
+  event_bitmap = train_set[1][idx]
+  timex3_bitmap = train_set[2][idx]
+  # source_bitmap = train_set[3][idx]
+  # target_bitmap = train_set[4][idx]
+
+  first_entity_bitmap = train_set[3][idx]
+  second_entity_bitmap = train_set[4][idx]
+
+  # boolean_features = train_set[7][idx]
+  # label = train_set[8][idx]
+  # label = train_set[7][idx]
+  label = train_set[5][idx]
+
+  # train_set = [sent_embed, pos_embed_source, pos_embed_target, event_bitmap, timex3_bitmap, source_bitmap, target_bitmap, boolean_features, label]
+  # train_set = [sent_embed, pos_embed_source, pos_embed_target, event_bitmap, timex3_bitmap, source_bitmap, target_bitmap, label]
+  # train_set = [sent_embed, event_bitmap, timex3_bitmap, source_bitmap, target_bitmap, label]
+  # train_set = [sent_embed, event_bitmap, timex3_bitmap, first_entity_bitmap, second_entity_bitmap, label]
+
+  # train_set = [sent_embed, pos_embed_first_entity, pos_embed_second_entity, event_bitmap, timex3_bitmap, source_bitmap, target_bitmap, label]
+  # train_set = [sent_embed, pos_embed_source, pos_embed_target, event_bitmap, timex3_bitmap, label]
+
+  # k_fold_dev_sets, k_fold_closure_test_sets = create_k_fold(closure_test_set, 10)
+
+  # inspect2('/home/yuyi/cs6890/project/data/embedding_with_xml_tag.pkl', k_fold_dev_sets[3], entire=True)
+  # inspect2('/home/yuyi/cs6890/project/data/embedding_with_xml_tag.pkl', k_fold_closure_test_sets[3], entire=True)
+
+  # sys.exit("exit for bugging...")
 
 
-      confusion_matrix = cnn.train_and_evaluate(FLAGS, embedding, train_set, dev_set, test_set, closure_test_set, train_dataset_size)
-      print(20 * '*' + 'model 2' + 20 * '*')
-      print('confusion matrix: ')
-      print(confusion_matrix)
+  # ======================================================================
+  #  STEP 1: Train a baseline model.
+  #  This trains a feed forward neural network with one hidden layer.
+  #
+  #  Expected accuracy: 97.80%
 
-      total_confusion_matrix += confusion_matrix
+  if mode == 1:
+    cnn = ConvNet(1)
+    accuracy = cnn.train_and_evaluate(FLAGS, embedding, train_set, dev_set, test_set, train_label_count)
 
-      # total_confusion_matrix = numpy.zeros((class_num, class_num), int)
-      # for dev_set, test_set in zip(k_fold_dev_sets, k_fold_closure_test_sets):
-      #   confusion_matrix = cnn.train_and_evaluate(FLAGS, embedding, train_set, dev_set, test_set, closure_test_set, train_label_count)
-      #   print(20 * '*' + 'model 2' + 20 * '*')
-      #   print('confusion matrix: ')
-      #   print(confusion_matrix)
-      #   total_confusion_matrix += confusion_matrix
-      # print('total confusion matrix: ')
-      # print(total_confusion_matrix)
+    # Output accuracy.
+    print(20 * '*' + 'model 1' + 20 * '*')
+    print('accuracy is %f' % (accuracy))
+    print()
 
-  print('total confusion matrix: ')
-  print(total_confusion_matrix)
+
+  # ======================================================================
+  #  STEP 2: Use one convolutional layer.
+  #  
+  #  Expected accuracy: 98.78%
+
+  if mode == 2:
+    cnn = ConvNet(2)
+
+    # confusion_matrix = cnn.train_and_evaluate(FLAGS, embedding, train_set, dev_set, test_set, closure_test_set, train_label_count)
+
+
+    confusion_matrix = cnn.train_and_evaluate(FLAGS, embedding, train_set, dev_set, test_set, closure_test_set, train_dataset_size)
+    print(20 * '*' + 'model 2' + 20 * '*')
+    print('confusion matrix: ')
+    print(confusion_matrix)
+
+    # total_confusion_matrix += confusion_matrix
+
+    # total_confusion_matrix = numpy.zeros((class_num, class_num), int)
+    # for dev_set, test_set in zip(k_fold_dev_sets, k_fold_closure_test_sets):
+    #   confusion_matrix = cnn.train_and_evaluate(FLAGS, embedding, train_set, dev_set, test_set, closure_test_set, train_label_count)
+    #   print(20 * '*' + 'model 2' + 20 * '*')
+    #   print('confusion matrix: ')
+    #   print(confusion_matrix)
+    #   total_confusion_matrix += confusion_matrix
+    # print('total confusion matrix: ')
+    # print(total_confusion_matrix)
+
+  # print('total confusion matrix: ')
+  # print(total_confusion_matrix)
   
 
 

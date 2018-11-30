@@ -127,7 +127,7 @@ class ConvNet(object):
     label = data_set[5]
     # label = data_set[5]
 
-    is_thyme = data_set[6]
+    # is_thyme = data_set[6]
 
     # position of is_thyme in the batch data
     # similar to label0_pos, label1_pos, etc.
@@ -321,7 +321,7 @@ class ConvNet(object):
     max_sent_len = train_set[0].shape[1]
 
     # label0_count, label1_count, label2_count, label3_count, label4_count, label5_count, label6_count, label7_count, label8_count, label9_count = train_label_count
-    thyme_count, physio_count = train_dataset_size
+    # thyme_count, physio_count = train_dataset_size
 
     
     print ("train_set type: ", type(train_set))
@@ -433,7 +433,7 @@ class ConvNet(object):
 
       ###################################
       # add a dropout layer
-      dropout = tf.layers.dropout(inputs=features, rate=0.25, training=is_training)
+      dropout = tf.layers.dropout(inputs=features, rate=drop_out, training=is_training)
       dense = tf.layers.dense(inputs=dropout, units=300, activation=tf.nn.relu)
       logits = tf.layers.dense(inputs=dense, units=class_num)
       # logits = tf.layers.dense(features, units=class_num)      
