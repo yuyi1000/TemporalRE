@@ -15,6 +15,7 @@ from pycorenlp import StanfordCoreNLP
 import nltk
 import pickle
 import numpy
+import sys
 
 import itertools
 
@@ -1879,6 +1880,7 @@ class THYME(object):
 
 def main():
 
+
     is_full_dataset = True
     # is_full_dataset = False
     
@@ -1889,6 +1891,19 @@ def main():
     physio_graph_data_path = '/home/yuyi/workspace/brat-v1.3_Crunchy_Frog/data/queries/patient101/'
     physio_graph_anno_path = '/home/yuyi/workspace/brat-v1.3_Crunchy_Frog/data/queries/patient101/'
 
+    if len(sys.argv) > 1:
+        if sys.argv[1] != 'T':
+            is_full_dataset = False
+    if len(sys.argv) > 2:
+        thyme_data_path = sys.argv[2]
+    if len(sys.argv) > 3:
+        thyme_anno_path = sys.argv[3]
+    if len(sys.argv) > 4:
+        physio_graph_data_path = sys.argv[4]
+    if len(sys.argv) > 5:
+        physio_graph_anno_path = sys.argv[5]
+
+    
     # k = 1
     k = 5
     for i in range(k):

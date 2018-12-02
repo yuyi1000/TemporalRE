@@ -264,10 +264,7 @@ def main():
 
 
     # ======================================================================
-    #  STEP 1: Train a baseline model.
-    #  This trains a feed forward neural network with one hidden layer.
-    #
-    #  Expected accuracy: 97.80%
+
 
     if mode == 1:
       cnn = ConvNet(1)
@@ -280,9 +277,6 @@ def main():
 
 
     # ======================================================================
-    #  STEP 2: Use one convolutional layer.
-    #  
-    #  Expected accuracy: 98.78%
 
     if mode == 2:
       cnn = ConvNet(2)
